@@ -1,8 +1,9 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const Place = require("./models/Place");
 
 const app = express();
+const PlacesController = require("./controllers/placesController");
+const ReservationsController = require("./controllers/reservationsController");
 
 const PORT = process.env.PORT || 8080;
 
@@ -26,21 +27,8 @@ connection.on("error", (err) => {
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// TODO: ABSTRACT THESE PLACES ROUTES OUT INTO A CONTROLLER
-
-app.get("/api/places", (req, res) => {
-  Place.find().then((allPlaces) => {
-    res.json(allPlaces);
-  });
-});
-
-app.post("/api/places", (req, res) => {
-  Place.create(req.body).then((newPlace) => {
-    res.json(newPlace);
-  });
-});
-
-// TODO: ADD PUT AND DELETE ROUTES
+app.use("/api/places", PlacesController);
+app.use("/api/reservations", ReservationsController);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
